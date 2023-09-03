@@ -47,13 +47,13 @@ resource "aws_instance" "fsbano" {
   }
 
   provisioner "remote-exec" {
-   inline = [
-    "cat /etc/os-release",
-    "cat /etc/image-id",
-    "/usr/bin/sudo yum update",
-    "/usr/bin/sudo yum install -y nginx",
-    "/usr/bin/sudo systemctl enable --now nginx"
-   ]
+    inline = [
+      "cat /etc/os-release",
+      "cat /etc/image-id",
+      "/usr/bin/sudo yum update",
+      "/usr/bin/sudo yum install -y nginx",
+      "/usr/bin/sudo systemctl enable --now nginx"
+    ]
   }
 
   provisioner "local-exec" {
