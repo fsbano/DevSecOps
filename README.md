@@ -1,2 +1,2 @@
-# devops-challenge
+# DevOps Challenge
 DevOps Challenge
