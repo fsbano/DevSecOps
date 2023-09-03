@@ -16,34 +16,43 @@ resource "aws_key_pair" "fsbano" {
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
-resource "aws_security_group_rule" "public_in_ssh" {
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "sg-094c45235b94d848e"
-}
+resource "aws_security_group" "sg-fsbano" {
+  name        = "fsbano-sg"
+  description = "Allow HTTP and SSH traffic via Terraform"
 
-resource "aws_security_group_rule" "public_in_http" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "sg-094c45235b94d848e"
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_instance" "fsbano" {
-  ami           = "ami-051f7e7f6c2f40dc1"
-  instance_type = "t2.micro"
-  key_name      = aws_key_pair.fsbano.key_name
+  ami                    = "ami-051f7e7f6c2f40dc1"
+  instance_type          = "t2.micro"
+  key_name               = aws_key_pair.fsbano.key_name
+  vpc_security_group_ids = [aws_security_group.sg-fsbano.id]
 
   connection {
-    type     = "ssh"
-    user     = "ec2-user"
-    private_key = "${file("~/.ssh/id_rsa")}"
-    host     = self.public_ip
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("~/.ssh/id_rsa")
+    host        = self.public_ip
   }
 
   provisioner "remote-exec" {
