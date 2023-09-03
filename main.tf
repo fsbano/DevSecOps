@@ -48,12 +48,16 @@ resource "aws_instance" "fsbano" {
 
   provisioner "remote-exec" {
    inline = [
-    "date"
+    "cat /etc/os-release",
+    "cat /etc/image-id",
+    "/usr/bin/sudo yum update",
+    "/usr/bin/sudo yum install -y nginx",
+    "/usr/bin/sudo systemctl enable --now nginx"
    ]
   }
 
   provisioner "local-exec" {
-    command = "echo ${self.public_dns}"
+    command = "curl http://${self.public_dns}"
   }
 
   tags = {
