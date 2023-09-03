@@ -43,6 +43,7 @@ resource "aws_security_group" "sg-fsbano" {
 }
 
 resource "aws_instance" "fsbano" {
+  count                  = var.instance_count
   ami                    = "ami-051f7e7f6c2f40dc1"
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.fsbano.key_name
