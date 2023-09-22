@@ -1,2 +1,2 @@
-# DevOps Challenge
-DevOps Challenge
+# DevSecOps Challenge
+DevSecOps Challenge
